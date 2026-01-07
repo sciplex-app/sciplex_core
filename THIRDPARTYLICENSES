@@ -1,0 +1,30 @@
+Third-Party Notices for sciplex-core
+Updated: 2026-01-07
+
+Runtime dependencies (from pyproject.toml):
+- pandas — BSD-3-Clause — https://pandas.pydata.org/
+- numpy — BSD-3-Clause — https://numpy.org/
+- scikit-learn — BSD-3-Clause — https://scikit-learn.org/
+- matplotlib — Matplotlib license (PSF/BSD-compatible) — https://matplotlib.org/
+- xgboost — Apache-2.0 — https://github.com/dmlc/xgboost
+- networkx — BSD-3-Clause — https://networkx.org/
+- python-dotenv — BSD-3-Clause — https://github.com/theskumar/python-dotenv
+- docstring_parser — MIT — https://github.com/rr-/docstring_parser
+- requests — Apache-2.0 — https://requests.readthedocs.io/
+- openpyxl — MIT — https://openpyxl.readthedocs.io/
+- numexpr — MPL-2.0 — https://github.com/pydata/numexpr
+- plotly — MIT — https://plotly.com/python/
+- kaleido — MIT — https://github.com/plotly/Kaleido
+
+Development-only extras:
+- pytest — MIT — https://docs.pytest.org/
+- ruff — MIT — https://github.com/astral-sh/ruff
+
+Assets:
+- Google Material Icons — Apache-2.0 — https://fonts.google.com/icons
+
+Notes:
+- License texts are provided within each dependency’s distribution (e.g., site-packages/*/LICENSE*). Consult those files for full terms and attribution requirements.
+- Matplotlib bundles additional font and third-party notices inside its LICENSE file; review when redistributing.
+- Optional LLM-related features rely on sciplex_core_ext (not bundled here); its licenses are tracked separately.
+

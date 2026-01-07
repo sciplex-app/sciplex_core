@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sciplex-core"
+version = "0.1.0"
+description = "Core logic for Sciplex visual programming - models, controllers, and utilities"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Sciplex Team"}
+]
+keywords = ["data-science", "visual-programming", "workflow", "nodes", "core"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    # Data Science
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "scikit-learn>=1.6.0,<2.0.0",
+    "matplotlib>=3.10.0",
+    "xgboost>=3.0.0",
+    # Graph/Network
+    "networkx>=3.4.0",
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "docstring_parser>=0.16",
+    "requests>=2.31.0",
+    "openpyxl>=3.1.0",
+    "numexpr>=2.11.0",
+    # Plotting
+    "plotly>=5.0.0",
+    # Plotly image export
+    "kaleido>=0.2.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.8.4",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/sciplex"
+Documentation = "https://sciplex.readthedocs.io"
+Repository = "https://github.com/yourusername/sciplex"
+
+[tool.setuptools]
+package-dir = {"sciplex_core" = "."}
+packages = [
+    "sciplex_core",
+    "sciplex_core.controller",
+    "sciplex_core.model",
+    "sciplex_core.utils",
+    "sciplex_core.utils.nodes",
+    "sciplex_core.libraries",
+    "sciplex_core.libraries.default",
+    "sciplex_core.libraries.internal",
+    "sciplex",
+]
+
+[tool.setuptools.package-data]
+sciplex_core = [
+    "assets/**/*",
+    "libraries/**/*",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["sciplex_core"]
+
