@@ -262,11 +262,6 @@ class SettingsModel(BaseModel):
                     },
                 }
         
-        # Remove legacy LLM/AI sections if they exist (no longer in core)
-        for legacy_key in ["llm", "AI Assistant"]:
-            if legacy_key in config:
-                del config[legacy_key]
-        
         obj.config = config
         obj._dark_theme = True
         # Font settings removed - no longer used in main app
