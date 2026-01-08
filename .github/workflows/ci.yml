@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install ".[dev]" build
+
+      - name: Ruff check
+        run: ruff check .
+
+      - name: Mypy (Python type check)
+        run: mypy sciplex_core
+
+      - name: Pytest
+        run: pytest
+
+      - name: Build wheel and sdist
+        run: python -m build
+
