@@ -72,6 +72,10 @@ Functions decorated with `@nodify` gain inputs/outputs from type hints and regis
 - Tests: `pytest`
 - Build wheel/sdist: `python -m build`
 
+## Contributions
+
+Issues and bug reports are welcome. We are not accepting pull requests at this time.
+
 ## License
 
 MIT
