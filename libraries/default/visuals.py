@@ -317,7 +317,7 @@ def Histogram(
     return fig
 
 
-@nodify(icon="Line",
+@nodify(icon="line",
         title=Attribute("lineedit", value="My Plot"),
         color=Attribute("colorpicker", value="#06E4A8"),
         x=Attribute("combobox", source="data", extractor="dataframe_columns_with_index"),
