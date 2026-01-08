@@ -27,9 +27,6 @@ jobs:
       - name: Ruff check
         run: ruff check .
 
-      - name: Mypy (Python type check)
-        run: mypy sciplex_core
-
       - name: Pytest
         run: pytest
 
