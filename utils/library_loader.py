@@ -14,7 +14,6 @@ import os
 import shutil
 import sys
 from functools import wraps
-from pathlib import Path
 from typing import Callable, Dict, List, Optional, Set
 
 logger = logging.getLogger(__name__)

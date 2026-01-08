@@ -8,8 +8,8 @@ Usage:
 """
 
 from sciplex_core.model.library_model import Attribute
-from sciplex_core.utils.node_factory import nodify
 from sciplex_core.utils.functions import variables_registry
+from sciplex_core.utils.node_factory import nodify
 
 
 class _WorkspaceProxy:

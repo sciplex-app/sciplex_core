@@ -115,7 +115,6 @@ def export_graph_to_python_code(scene_model, base_dir: str | None = None) -> Exp
             # Try to match this path to a library name used in the graph
             # For paths like "default/data.py", the library name from nodes might be "default" or "data"
             # We'll use the module name (filename) as the default
-            path_parts = p.replace("\\", "/").split("/")
             # Check if any library name from nodes matches this path
             for lib_name in libs_used.keys():
                 # If library name matches the module name or is in the path

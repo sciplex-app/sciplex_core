@@ -2,7 +2,6 @@ import ast
 import json
 import logging
 import os
-import sys
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
@@ -58,15 +57,15 @@ class SceneController:
 
         self.events = event_emitter if event_emitter is not None else SimpleEventEmitter()
         self.clipboard = clipboard if clipboard is not None else QtClipboard()
-        
+
         # Initialize logger
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-        
+
         # Set reference to this controller on the graph model
         # This allows GraphModel.execute() to delegate to SceneController
         # (for backward compatibility during migration)
         self._update_graph_controller_ref()
-    
+
     def _update_graph_controller_ref(self):
         """Update the graph model's reference to this controller."""
         import weakref
@@ -320,12 +319,12 @@ class SceneController:
     def execute_graph(self) -> SceneOperationResult:
         """
         Execute all nodes in the graph in topological order.
-        
+
         This method orchestrates graph execution. It was moved from GraphModel
         to maintain proper MVC separation (models should not import controllers).
-        
+
         Checks that the graph is a DAG (directed acyclic graph) before execution.
-        
+
         Returns:
             SceneOperationResult indicating success or failure
         """
@@ -336,9 +335,9 @@ class SceneController:
                 message="No graph to execute.",
                 code="no_graph",
             )
-        
+
         self.logger.info(f"Executing graph: {graph.id}")
-        
+
         # Check if graph is a DAG (this will build graph if needed, but uses cache)
         if not graph.is_dag():
             return SceneOperationResult(
@@ -346,20 +345,20 @@ class SceneController:
                 message="Please check for cycles and ensure the graph is directed and acyclic.",
                 code="not_dag",
             )
-        
+
         # Only build/sort if not already cached (is_dag() may have built it)
         if graph._nx_graph is None:
             graph.build_nx_graph()
         if graph.sorted_nodes is None:
             graph.topological_sort()
-        
+
         if graph.sorted_nodes is None:
             return SceneOperationResult(
                 success=False,
                 message="Graph contains cycles, cannot execute.",
                 code="cycle_detected",
             )
-        
+
         # Execute nodes through controllers
         # Use existing controller from view if available, otherwise create temporary one
         for node in graph.sorted_nodes:
@@ -375,7 +374,7 @@ class SceneController:
             else:
                 # No existing controller, create temporary one with event emitter
                 node_controller = NodeController(node, event_emitter=self.events)
-            
+
             result = node_controller.execute()
             if not result.success:
                 return SceneOperationResult(
@@ -383,19 +382,19 @@ class SceneController:
                     message=f"Node execution failed: {result.message}",
                     code=result.code or "node_execution_failed",
                 )
-        
+
         return SceneOperationResult(success=True, message="Graph executed successfully.")
 
     def execute_up_to_node(self, node_model) -> SceneOperationResult:
         """
         Execute nodes up to a target node in topological order.
-        
+
         This method orchestrates partial graph execution. It was moved from GraphModel
         to maintain proper MVC separation.
-        
+
         Args:
             node_model: The target node to execute up to
-            
+
         Returns:
             SceneOperationResult indicating success or failure
         """
@@ -406,9 +405,9 @@ class SceneController:
                 message="No graph to execute.",
                 code="no_graph",
             )
-        
+
         self.logger.info(f"Executing up to node: {node_model.id}")
-        
+
         # Only build graph if not already cached
         if graph._nx_graph is None:
             graph.build_nx_graph()
@@ -424,7 +423,7 @@ class SceneController:
             # Check node execution mode setting
             from sciplex_core.model.settings_model import settings
             execution_mode = settings.get_node_execution_mode()
-            
+
             if execution_mode == "single node":
                 # Only execute the target node, not its ancestors
                 sorted_nodes = [node_model]
@@ -452,7 +451,7 @@ class SceneController:
                 else:
                     # No existing controller, create temporary one with event emitter
                     node_controller = NodeController(node, event_emitter=self.events)
-                
+
                 result = node_controller.execute()
                 if not result.success:
                     return SceneOperationResult(
@@ -835,9 +834,9 @@ class SceneController:
                         logger = logging.getLogger(__name__)
                         print(f"[PASTE] About to deserialize node: title={node_data.get('title')}, parameters={node_data.get('parameters', {})}")
                         logger.info(f"[PASTE] About to deserialize node: title={node_data.get('title')}, parameters={node_data.get('parameters', {})}")
-                        
+
                         node_model = NodeModel.deserialize(node_data, restore_id=False)
-                        
+
                         if node_model:
                             params_after = {name: attr.value for name, attr in node_model.parameters.items()}
                             print(f"[PASTE] Deserialized node ID: {node_model.id}, parameters after deserialize: {params_after}")

@@ -12,7 +12,7 @@ SCRIPT_DEFAULT_CODE = '''def my_function(data, i: int=2):
     If you use type hints for input sockets and return types, connecting nodes with incosistent types will result in an error.
 
     You can use global variables to store data in a flow. To view it, click on the "Workspace" button in the toolbar.
-    
+
     Example workspace variables:
         workspace["a"] = 2
         workspace["xs"] = np.arange(0, 1, 0.1)

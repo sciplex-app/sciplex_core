@@ -200,7 +200,7 @@ class SettingsModel(BaseModel):
 
     def get_edge_type(self):
         return self.config["Display"]["elements"]["Edge Type"].value
-    
+
     def get_node_execution_mode(self):
         return self.config["Execution"]["elements"]["Node execution"].value
 
@@ -240,7 +240,7 @@ class SettingsModel(BaseModel):
 
         # Start with default config, then update with loaded values
         config = obj.config.copy()
-        
+
         # Update with serialized values (merges with defaults)
         for section_key, section_data in serialized.get("config", {}).items():
             if section_key in config:
@@ -261,7 +261,7 @@ class SettingsModel(BaseModel):
                         for label, attr_data in section_data["elements"].items()
                     },
                 }
-        
+
         obj.config = config
         obj._dark_theme = True
         # Font settings removed - no longer used in main app

@@ -80,7 +80,7 @@ class NodeModel(BaseModel):
         # Check if execute function was set directly (for internal nodes)
         if hasattr(self, '_execute_fn'):
             return self._execute_fn
-        
+
         # Special handling for Script nodes - compile from stored code
         if self.is_script and "function" in self.parameters:
             return self._get_script_function()
@@ -95,6 +95,7 @@ class NodeModel(BaseModel):
         """Compile and return the function from the script code parameter."""
         import numpy as np
         import pandas as pd
+
         from sciplex import workspace
 
         code = self.parameters.get("function")
@@ -307,7 +308,7 @@ class NodeModel(BaseModel):
             def embedded_display_execute(data):
                 """Pass-through function for display - just returns input."""
                 return data
-            
+
             node_model = NodeModel(
                 title="Display",
                 icon="",
@@ -320,11 +321,11 @@ class NodeModel(BaseModel):
             # Create script node directly (not from library lookup)
             from sciplex_core.model.library_model import Attribute
             from sciplex_core.utils.script_node import SCRIPT_DEFAULT_CODE
-            
+
             # Get function code from serialized parameters, or use default
             params_data = data.get("parameters", {}) or {}
             function_code = params_data.get("function", SCRIPT_DEFAULT_CODE)
-            
+
             node_model = NodeModel(
                 title=title,  # Preserve custom title from serialization
                 icon="python",
@@ -346,7 +347,7 @@ class NodeModel(BaseModel):
                 )
                 return None
             node_model = library_item.create_node_model()
-            
+
             # Verify that parameters are Attribute objects (they should be from create_node_model)
             import logging
             logger = logging.getLogger(__name__)
@@ -369,7 +370,7 @@ class NodeModel(BaseModel):
         params_data = data.get("parameters", {}) or {}
         import logging
         logger = logging.getLogger(__name__)
-        
+
         for name, val in params_data.items():
             if name in node_model.parameters:
                 # Ensure the parameter is still an Attribute object with correct widget/options
@@ -425,15 +426,15 @@ class NodeModel(BaseModel):
         # Restore subtitle
         if data.get("subtitle"):
             node_model.subtitle = data.get("subtitle")
-        
+
         # Restore hide_for_presentation flag
         node_model.hide_for_presentation = data.get("hide_for_presentation", False)
-        
+
         # Restore size for Display nodes (if present)
         if title == "Display":
             node_model.width = data.get("width")
             node_model.height = data.get("height")
-        
+
         # Restore execution state (executed/failed flags) - preserve execution status when copying/pasting
         node_model.executed = data.get("executed", False)
         node_model.failed = data.get("failed", False)
@@ -460,7 +461,7 @@ class NodeModel(BaseModel):
                 # Create mapping of socket names to serialized socket data
                 serialized_input_sockets = {s.get("name"): s for s in data.get("input_sockets", [])}
                 serialized_output_sockets = {s.get("name"): s for s in data.get("output_sockets", [])}
-                
+
                 # Restore socket IDs by matching by name
                 for socket in node_model.input_sockets:
                     if socket.name in serialized_input_sockets:
@@ -470,7 +471,7 @@ class NodeModel(BaseModel):
                             # Also restore position if present
                             if "position" in serialized_socket:
                                 socket.position = serialized_socket["position"]
-                
+
                 for socket in node_model.output_sockets:
                     if socket.name in serialized_output_sockets:
                         serialized_socket = serialized_output_sockets[socket.name]
@@ -479,7 +480,7 @@ class NodeModel(BaseModel):
                             # Also restore position if present
                             if "position" in serialized_socket:
                                 socket.position = serialized_socket["position"]
-        
+
         # Re-extract socket descriptions from library item docstring (like desktop version)
         # This ensures descriptions are always up-to-date from the library item
         for socket in node_model.input_sockets + node_model.output_sockets:
@@ -529,33 +530,33 @@ class NodeModel(BaseModel):
     def _validate_pylineedit_parameter(self, param_name: str, param_attr) -> None:
         """
         Validate a pylineedit parameter value during execution.
-        
+
         If the value is still a string (not parsed), it means validation failed earlier.
         We try to parse it again, and if it fails, we raise an error to prevent execution.
-        
+
         Raises ValueError if the value is invalid.
         """
         if param_attr.widget != "pylineedit":
             return
-        
+
         value = param_attr.value
-        
+
         # If value is a string, it might be:
         # 1. A valid string literal that was parsed (e.g., user entered '"abc"' -> string "abc")
         # 2. An invalid expression that couldn't be parsed (e.g., user entered "abc" without quotes)
-        # 
+        #
         # To distinguish, we check if it's a simple string that looks like it should have been
         # a literal. If it's a bare identifier (like "abc"), it's invalid.
         # If it's a quoted string (like '"abc"'), it would have been parsed already.
-        # 
+        #
         # Actually, simpler: if validation failed in update_node_parameter, the raw string
         # is stored. During execution, we try to parse it again. If it's a valid string literal,
         # it will parse successfully and we can update the value. If it fails, we raise an error.
-        
+
         if isinstance(value, str):
             import ast
             expr_str = value.strip()
-            
+
             # Try to parse as Python literal first
             try:
                 parsed_value = ast.literal_eval(expr_str)
@@ -564,21 +565,22 @@ class NodeModel(BaseModel):
                 return
             except (ValueError, SyntaxError):
                 pass
-            
+
             # Try to evaluate as expression with workspace variables
             try:
-                from sciplex_core.utils.functions import variables_registry, SafeEvaluator
-                import pandas as pd
                 import numpy as np
-                
+                import pandas as pd
+
+                from sciplex_core.utils.functions import SafeEvaluator, variables_registry
+
                 namespace = dict(getattr(variables_registry, "data", {}) or {})
                 namespace.update({"pd": pd, "np": np})
-                
+
                 if "=" in expr_str:
                     parts = expr_str.split("=", 1)
                     if len(parts) == 2 and parts[0].strip().isidentifier():
                         expr_str = parts[1].strip()
-                
+
                 tree = ast.parse(expr_str, mode='eval')
                 evaluator = SafeEvaluator(namespace)
                 parsed_value = evaluator.visit(tree)
@@ -616,9 +618,9 @@ class NodeModel(BaseModel):
         """
         # Special handling for Display nodes - they don't need an execute function
         # They just pass through data for visualization
-        is_display_node = (self.title == "Display" or 
+        is_display_node = (self.title == "Display" or
                           getattr(self, 'library_name', None) == "Display")
-        
+
         if not self.execute_fn:
             if is_display_node:
                 # Display nodes don't need execution - they just visualize input data

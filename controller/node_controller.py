@@ -60,7 +60,7 @@ class NodeController:
         try:
             logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
             logger.info(f"Executing node: {self.node_model.id} ({self.node_model.title})")
-            
+
             # Gather inputs and parameters for logging
             inputs = self.node_model._get_input_sockets_data()
             parameters = self.node_model._get_parameters()
@@ -80,7 +80,7 @@ class NodeController:
 
             # Emit success event after execution
             self.on_execute_state_updated(EXECUTED, "")
-            
+
             logger.info(f"Node execution completed: {self.node_model.id} ({self.node_model.title})")
 
             return NodeOperationResult(success=True)

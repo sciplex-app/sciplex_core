@@ -59,7 +59,7 @@ class SocketModel(BaseModel):
                 if scene_controller:
                     scene_controller.execute_up_to_node(self.node)
                     return
-        
+
         # Fallback: use deprecated method with warning
         import logging
         logger = logging.getLogger(__name__)

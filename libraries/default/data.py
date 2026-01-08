@@ -32,9 +32,11 @@ About figures:
 
 import numpy as np
 import pandas as pd
+from _helpers import (
+    evaluate_mathematical_expression,  # _helpers.py can be used but is excluded from the library sidebar
+)
 
-from sciplex import workspace, nodify, Attribute
-from _helpers import evaluate_mathematical_expression # _helpers.py can be used but is excluded from the library sidebar
+from sciplex import Attribute, nodify, workspace
 
 
 @nodify(
@@ -221,11 +223,11 @@ def SaveCSV(data, path: str, index: str = "False") -> None:
         index (bool): If index shall be saved or not.
     """
     save_index = index=="True"
-    
+
     # Ensure .csv extension
     if path and not path.endswith('.csv'):
         path = path + '.csv'
-    
+
     data.to_csv(path, index=save_index)
 
 
@@ -244,11 +246,11 @@ def SaveExcel(data, path: str, index: str = "False") -> None:
         index (bool): If index shall be saved or not.
     """
     save_index = index=="True"
-    
+
     # Ensure .xlsx extension
     if path and not path.endswith('.xlsx'):
         path = path + '.xlsx'
-    
+
     data.to_excel(path, index=save_index)
 
 

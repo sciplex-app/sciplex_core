@@ -35,10 +35,10 @@ import re
 
 import numpy as np
 import pandas as pd
+from _helpers import assign_name, evaluate_mathematical_expression
 from scipy.interpolate import RegularGridInterpolator
 
-from sciplex import nodify, Attribute, workspace
-from _helpers import assign_name, evaluate_mathematical_expression
+from sciplex import Attribute, nodify, workspace
 
 
 @nodify(

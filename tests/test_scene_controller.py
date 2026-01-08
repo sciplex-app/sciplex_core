@@ -1,4 +1,3 @@
-from pathlib import Path
 
 from sciplex_core.controller.scene_controller import SceneController
 

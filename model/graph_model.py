@@ -34,7 +34,7 @@ class GraphModel(BaseModel):
                 f"Call stack:\n{''.join(traceback.format_stack()[-5:-1])}"
             )
             return
-        
+
         self.logger.info("Building NetworkX Graph.")
         g = nx.DiGraph()
         for node in self.nodes:
@@ -66,7 +66,7 @@ class GraphModel(BaseModel):
     def execute_up_to_node(self, target_node):
         """
         Execute nodes up to a target node.
-        
+
         NOTE: This method is deprecated. Use SceneController.execute_up_to_node() instead.
         This method is kept for backward compatibility but will be removed.
         """
@@ -80,7 +80,7 @@ class GraphModel(BaseModel):
             if scene_controller:
                 result = scene_controller.execute_up_to_node(target_node)
                 return result
-        
+
         # Fallback: raise error to force migration
         raise RuntimeError(
             "GraphModel.execute_up_to_node() is no longer supported. "
@@ -108,7 +108,7 @@ class GraphModel(BaseModel):
             ]
             for edge in edges_to_remove:
                 self.remove_edge(edge)
-            
+
             # Remove the node itself
             self.nodes.remove(node)
             self.sorted_nodes = None
@@ -160,7 +160,7 @@ class GraphModel(BaseModel):
                 if not result.success:
                     raise RuntimeError(result.message or "Graph execution failed")
                 return
-        
+
         # Fallback: raise error to force migration
         raise RuntimeError(
             "GraphModel.execute() is no longer supported. "
@@ -192,19 +192,19 @@ class GraphModel(BaseModel):
         import logging
         logger = logging.getLogger(__name__)
         logger.info(f"GraphModel.deserialize called with restore_id={restore_id}")
-        
+
         if data is None:
             logger.error("GraphModel.deserialize: data is None!")
             raise ValueError("Cannot deserialize GraphModel: data is None")
-        
+
         if not isinstance(data, dict):
             logger.error(f"GraphModel.deserialize: data is not a dict, got {type(data)}")
             raise ValueError(f"Cannot deserialize GraphModel: expected dict, got {type(data)}")
-        
+
         if "nodes" not in data:
             logger.error(f"GraphModel.deserialize: 'nodes' key missing. Keys: {list(data.keys())}")
             raise ValueError(f"Cannot deserialize GraphModel: missing 'nodes' key. Available keys: {list(data.keys())}")
-        
+
         graph = cls()
         if restore_id and "id" in data:
             graph.id = data["id"]
@@ -216,7 +216,7 @@ class GraphModel(BaseModel):
         node_lookup = {}
         nodes_data = data.get("nodes", [])
         logger.info(f"Deserializing {len(nodes_data)} nodes...")
-        
+
         for i, node_data in enumerate(nodes_data):
             try:
                 logger.debug(f"Deserializing node {i+1}/{len(nodes_data)}: {node_data.get('title', 'Unknown')}")
@@ -230,18 +230,18 @@ class GraphModel(BaseModel):
             except Exception as e:
                 logger.exception(f"Error deserializing node {i+1} ({node_data.get('title', 'Unknown')}): {e}")
                 raise
-        
+
         logger.info(f"Successfully deserialized {len(node_lookup)} nodes")
-        
+
         edges_data = data.get("edges", [])
         logger.info(f"Deserializing {len(edges_data)} edges...")
-        
+
         edges_created = 0
         for i, edge_data in enumerate(edges_data):
             try:
                 start_node_id = edge_data.get("start_node_id")
                 end_node_id = edge_data.get("end_node_id")
-                
+
                 if start_node_id not in node_lookup:
                     logger.warning(f"Edge {i+1}: start_node_id '{start_node_id}' not found in node_lookup")
                     continue
@@ -251,10 +251,10 @@ class GraphModel(BaseModel):
 
                 start_node = node_lookup[start_node_id]
                 end_node = node_lookup[end_node_id]
-                
+
                 start_socket_id = edge_data.get("start_socket_id")
                 end_socket_id = edge_data.get("end_socket_id")
-                
+
                 # Use next(..., None) to avoid StopIteration
                 start_socket = next(
                     (s for s in start_node.output_sockets if s.id == start_socket_id),
@@ -266,7 +266,7 @@ class GraphModel(BaseModel):
                         f"Available output socket IDs: {[s.id for s in start_node.output_sockets]}"
                     )
                     continue
-                    
+
                 end_socket = next(
                     (s for s in end_node.input_sockets if s.id == end_socket_id),
                     None
@@ -277,7 +277,7 @@ class GraphModel(BaseModel):
                         f"Available input socket IDs: {[s.id for s in end_node.input_sockets]}"
                     )
                     continue
-                
+
                 edge = EdgeModel(start_socket, end_socket)
                 if restore_id and "id" in edge_data:
                     edge.id = edge_data["id"]
@@ -288,7 +288,7 @@ class GraphModel(BaseModel):
                 logger.exception(f"Error deserializing edge {i+1}: {e}")
                 # Continue with other edges instead of failing completely
                 continue
-        
+
         logger.info(f"Successfully deserialized {edges_created}/{len(edges_data)} edges")
         logger.info(f"GraphModel.deserialize complete: {len(graph.nodes)} nodes, {len(graph.edges)} edges")
         return graph

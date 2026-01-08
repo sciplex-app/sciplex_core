@@ -34,9 +34,9 @@ from typing import Tuple
 
 import numpy as np
 import pandas as pd
-
-from sciplex import nodify, Attribute
 from _helpers import assign_name
+
+from sciplex import Attribute, nodify
 
 
 @nodify(

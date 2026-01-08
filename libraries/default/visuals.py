@@ -30,14 +30,14 @@ About figures:
 """
 
 import numbers
-from typing import Union, List, Tuple
+from typing import Union
 
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from sciplex import nodify, Attribute
+from sciplex import Attribute, nodify
 
 
 @nodify(icon="barchart",
@@ -68,23 +68,23 @@ def Bar(data, title: str="Bar Plot", color: str="#06E4A8", x: str=None, y: list=
         plot_data = data.to_frame()
     else:
         plot_data = data.copy()
-    
+
     is_stacked = stacked == "True"
     is_horizontal = orientation == "Horizontal"
-    
+
     # Handle x-axis
     if x == "index" or x is None:
         x_values = plot_data.index if hasattr(plot_data, 'index') else range(len(plot_data))
     else:
         x_values = plot_data[x] if x in plot_data.columns else plot_data.index
-    
+
     # Create figure
     fig = go.Figure()
-    
+
     # Determine number of series to plot
     y_columns = y if y else [plot_data.columns[0]] if len(plot_data.columns) > 0 else []
     num_series = len(y_columns)
-    
+
     # If multiple y columns, use Plotly's auto color palette (don't specify marker_color)
     # If single y column, use the specified color
     if num_series > 1:
@@ -109,7 +109,7 @@ def Bar(data, title: str="Bar Plot", color: str="#06E4A8", x: str=None, y: list=
                 orientation='h' if is_horizontal else 'v',
                 marker_color=color,
             ))
-    
+
     # Update layout
     fig.update_layout(
         title=title,
@@ -122,7 +122,7 @@ def Bar(data, title: str="Bar Plot", color: str="#06E4A8", x: str=None, y: list=
     # Enable grid (Plotly requires separate x/y axis updates)
     fig.update_xaxes(showgrid=True)
     fig.update_yaxes(showgrid=True)
-    
+
     return fig
 
 
@@ -155,10 +155,10 @@ def Box(data, title: str="Box Plot", color: str="#06E4A8", columns: list=[], by:
         plot_data = data.copy()
 
     fig = go.Figure()
-    
+
     if columns == []:
         columns = list(plot_data.select_dtypes(include=[np.number]).columns)
-    
+
     if group == "True" and by and by in plot_data.columns:
         # Group by column
         for group_name, group_data in plot_data.groupby(by):
@@ -178,13 +178,13 @@ def Box(data, title: str="Box Plot", color: str="#06E4A8", columns: list=[], by:
                     name=col,
                     marker_color=color,
                 ))
-    
+
     fig.update_layout(
         title=title,
         template='plotly_white',
         showlegend=True,
     )
-    
+
     return fig
 
 
@@ -264,20 +264,20 @@ def Histogram(
 
     is_normalized = normalize == "True"
     hist_label = label if label else (y if y else "Value")
-    
+
     # Set histnorm value (Plotly accepts: None, 'percent', 'probability', 'density', 'probability density')
     histnorm_value = 'probability density' if is_normalized else None
-    
+
     fig = go.Figure()
-    
+
     if use_custom_bins:
         # For custom bins, we need to compute the histogram manually
         # and use a bar chart, since Plotly's Histogram doesn't directly support custom bin edges
         counts, bin_edges = np.histogram(hist_data, bins=bin_edges)
-        
+
         # Calculate bin centers for x-axis
         bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-        
+
         # Normalize if requested
         if is_normalized:
             # Probability density: normalize so area = 1
@@ -286,7 +286,7 @@ def Histogram(
             y_title = 'Probability Density'
         else:
             y_title = 'Count'
-        
+
         # Use bar chart for custom bins
         fig.add_trace(go.Bar(
             x=bin_centers,
@@ -305,7 +305,7 @@ def Histogram(
             histnorm=histnorm_value,
         ))
         y_title = 'Probability Density' if is_normalized else 'Count'
-    
+
     fig.update_layout(
         title=title,
         xaxis_title=y if y else "Value",
@@ -313,7 +313,7 @@ def Histogram(
         template='plotly_white',
         showlegend=bool(label),
     )
-    
+
     return fig
 
 
@@ -351,16 +351,16 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         plot_data = data.to_frame()
     else:
         plot_data = data.copy()
-    
+
     if x == "index":
         x = None
-    
+
     # Get x values
     if x is None:
         x_values = plot_data.index if hasattr(plot_data, 'index') else range(len(plot_data))
     else:
         x_values = plot_data[x] if x in plot_data.columns else plot_data.index
-    
+
     # Get y values - use first column if y is None or not found
     if y and y in plot_data.columns:
         y_values = plot_data[y]
@@ -370,7 +370,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
             y = plot_data.columns[0]  # Update y for label
         else:
             raise ValueError("No data columns available for line plot")
-    
+
     # Map linestyle to Plotly dash
     dash_map = {
         '-': None,  # solid
@@ -380,7 +380,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         ' ': None,  # no line (handled by mode)
     }
     line_dash = dash_map.get(linestyle, None)
-    
+
     # Map marker style
     marker_symbol_map = {
         '.': 'circle',
@@ -389,7 +389,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         '+': 'cross',
     }
     marker_symbol = marker_symbol_map.get(marker, None) if marker else None
-    
+
     # Determine mode based on linestyle and marker
     has_line = linestyle != ' '  # Space means no line in matplotlib
     if has_line and marker_symbol:
@@ -400,9 +400,9 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         mode = 'markers'
     else:
         mode = 'markers'  # Fallback to markers if both are disabled
-    
+
     fig = go.Figure()
-    
+
     # Build trace parameters
     trace_params = {
         'x': x_values,
@@ -410,7 +410,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         'mode': mode,
         'name': label if label else (y if y else "Value"),
     }
-    
+
     # Add line parameters only if line is enabled
     if has_line:
         trace_params['line'] = dict(
@@ -418,7 +418,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
             width=linewidth,
             dash=line_dash,
         )
-    
+
     # Add marker parameters only if marker is enabled
     if marker_symbol:
         trace_params['marker'] = dict(
@@ -426,9 +426,9 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
             size=markersize,
             color=color,
         )
-    
+
     fig.add_trace(go.Scatter(**trace_params))
-    
+
     fig.update_layout(
         title=title,
         xaxis_title=x if x else "Index",
@@ -436,7 +436,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
         template='plotly_white',
         showlegend=bool(label),
     )
-    
+
     return fig
 
 
@@ -469,13 +469,13 @@ def Scatter(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: 
         plot_data = data.to_frame()
     else:
         plot_data = data.copy()
-    
+
     # Handle x values - use index if x is None or not found
     if x and x in plot_data.columns:
         x_values = plot_data[x]
     else:
         x_values = plot_data.index if hasattr(plot_data, 'index') else range(len(plot_data))
-    
+
     # Handle y values - use first column if y is None or not found
     if y and y in plot_data.columns:
         y_values = plot_data[y]
@@ -485,7 +485,7 @@ def Scatter(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: 
             y = plot_data.columns[0]  # Update y for label
         else:
             raise ValueError("No data columns available for scatter plot")
-    
+
     # Map marker style
     marker_symbol_map = {
         '.': 'circle',
@@ -494,9 +494,9 @@ def Scatter(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: 
         '+': 'cross',
     }
     marker_symbol = marker_symbol_map.get(marker, 'circle')
-    
+
     fig = go.Figure()
-    
+
     fig.add_trace(go.Scatter(
         x=x_values,
         y=y_values,
@@ -508,7 +508,7 @@ def Scatter(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: 
             color=color,
         ),
     ))
-    
+
     fig.update_layout(
         title=title,
         xaxis_title=x if x else "Index",
@@ -516,7 +516,7 @@ def Scatter(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: 
         template='plotly_white',
         showlegend=bool(label),
     )
-    
+
     return fig
 
 
@@ -532,22 +532,22 @@ def Plot(*figures, title: str = "My Plot") -> go.Figure:
     """
     if not figures:
         return go.Figure()
-    
+
     # Create new figure
     fig = go.Figure()
-    
+
     # Add all traces from all input figures
     for fig_input in figures:
         if isinstance(fig_input, go.Figure):
             for trace in fig_input.data:
                 fig.add_trace(trace)
-    
+
     # Use layout from first figure, but update title
     if figures and isinstance(figures[0], go.Figure):
         fig.update_layout(figures[0].layout)
-    
+
     fig.update_layout(title=title)
-    
+
     return fig
 
 
@@ -569,9 +569,9 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
         y (list): List of columns for y-axis
         title (str): Title of plot
         subplots (str): If "True", every y-value is plotted in a separate subplot
-        positions (str): List of subplot positions to control what is plotted in which subplot. 
-                        For each of the selected columns in y. Used if subplots="True". 
-                        Must have same length as selected columns. Can be a Python list string like "[1, 2, 3]".
+        positions (str): List of subplot positions to control what is plotted in which subplot.
+                         For each of the selected columns in y. Used if subplots="True".
+                         Must have same length as selected columns. Can be a Python list string like "[1, 2, 3]".
 
     Returns:
         fig: Created Plotly figure. Can be used as input for Plot and ToSubplot nodes.
@@ -580,15 +580,15 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
         plot_data = data.to_frame()
     else:
         plot_data = data.copy()
-    
+
     if not y:
         raise ValueError("At least one y column must be selected")
-    
+
     if x == "index":
         x = None
-    
+
     use_subplots = subplots == "True"
-    
+
     # Parse positions if provided
     use_positions = False
     position_list = []
@@ -606,19 +606,19 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
                 _, position_list = evaluate_mathematical_expression(positions, None)
                 if not isinstance(position_list, list):
                     position_list = [position_list]
-        except:
+        except Exception:
             # Fallback: treat as comma-separated values
             position_list = [int(p.strip()) for p in positions.split(',') if p.strip()]
-        
+
         if len(position_list) == len(y):
             use_positions = True
-    
+
     # Get x values
     if x is None:
         x_values = plot_data.index if hasattr(plot_data, 'index') else range(len(plot_data))
     else:
         x_values = plot_data[x] if x in plot_data.columns else plot_data.index
-    
+
     if use_subplots:
         # Create subplots - one for each y column
         n_subplots = len(y)
@@ -629,13 +629,13 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
             subplot_titles=y,
             vertical_spacing=0.05,
         )
-        
+
         for i, column in enumerate(y):
             if column in plot_data.columns:
                 row_idx = position_list[i] if use_positions and i < len(position_list) else (i + 1)
                 if row_idx < 1 or row_idx > n_subplots:
                     row_idx = i + 1
-                
+
                 fig.add_trace(
                     go.Scatter(
                         x=x_values,
@@ -647,7 +647,7 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
                     row=row_idx,
                     col=1,
                 )
-        
+
         fig.update_layout(
             title_text=title,
             template='plotly_white',
@@ -655,7 +655,7 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
     else:
         # Single plot with multiple lines
         fig = go.Figure()
-        
+
         for col in y:
             if col in plot_data.columns:
                 fig.add_trace(go.Scatter(
@@ -664,13 +664,13 @@ def MultiLine(data: Union[pd.Series, pd.DataFrame], x: str=None, y: list=[], tit
                     mode='lines',
                     name=col,
                 ))
-        
+
         fig.update_layout(
             title=title,
             template='plotly_white',
             showlegend=True,
         )
-    
+
     return fig
 
 
@@ -711,27 +711,27 @@ def CombineFiguress(*subplots: list, title: str = "My Figure") -> go.Figure:
     """
     if not subplots:
         return go.Figure()
-    
+
     # Determine max rows and columns
     max_row = max(pos[0] for _, pos in subplots if isinstance(pos, (list, tuple)) and len(pos) >= 2)
     max_col = max(pos[1] for _, pos in subplots if isinstance(pos, (list, tuple)) and len(pos) >= 2)
-    
+
     # Create subplot figure
     fig = make_subplots(
         rows=max_row,
         cols=max_col,
         subplot_titles=[f"Subplot ({pos[0]}, {pos[1]})" for _, pos in subplots if isinstance(pos, (list, tuple))],
     )
-    
+
     # Add traces from each figure to its designated subplot
     for fig_input, (row, col) in subplots:
         if isinstance(fig_input, go.Figure):
             for trace in fig_input.data:
                 fig.add_trace(trace, row=row, col=col)
-    
+
     fig.update_layout(
         title_text=title,
         template='plotly_white',
     )
-    
+
     return fig
