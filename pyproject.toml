@@ -55,7 +55,7 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/yourusername/sciplex"
 Documentation = "https://sciplex.readthedocs.io"
-Repository = "https://github.com/yourusername/sciplex"
+Repository = "https://github.com/sciplex-UG/sciplex_core.git"
 
 [tool.setuptools]
 package-dir = {"sciplex_core" = "."}
