@@ -1,48 +1,32 @@
 """
-This file is part of the sciplex default library. You can use it as a reference for defining new nodes.
+This file is part of the Sciplex default library and serves as a reference for creating new nodes.
 
-When deleting default libraries in the workspace, they will be re-loaded in their original form upon next startup.
+When you delete default libraries from the workspace, they are automatically restored on the next startup.
 
-Files in the library folder containing functions and marked for import are loaded into the library sidebar of the flow. Files starting with a underline "_" are excluded.
+Library files that expose functions and are imported into the sidebar become available in the flow. Files whose names start with an underscore (e.g., `_helpers.py`) are skipped.
 
-Currently allowed python packages:
-- standard python libraries
-- pandas
-- numpy
-- scipy
-- matplotlib
-- plotly
+The following helpers are provided by `sciplex` (you can import them directly and the backend wires this up for you):
+- `@nodify`: decorate a function to define a node (see the examples below).
+- `Attribute`: describe the widgets that appear in the properties panel.
+- `workspace`: a global dictionary for sharing values between nodes (`workspace['foo'] = 2`).
 
-The following methods and objects are defined in sciplex (import from sciplex automatically handled by the backend):
-- nodify: decorator to define a node (see examples below)
-- Attribute: class to define a widget (see examples below)
-- workspace: global dictionary to store global variables
+Every Sciplex node is just a Python function. Attributes control widget types in the properties panel, and parameters without defaults map to input sockets while those with defaults become editable parameters.
 
-Functions can be decorated with nodify to define a node. Attributes serve as a specification on the widgets appearing in the properties panel.
+Type hints are optional. Use extractors when you need to probe incoming data (e.g., pull column names from a dataframe).
 
-If you don't use nodify, non-default parameters are treated as inputs, and the return value is treated as an output. Parameters with default values are treated as parameters in the properties panel.
-
-Use type hints to specify the type of the input and output of a function. This is optional.
-
-Global variables in the flow can be accessed using the workspace dictionary. Example: workspace['my_variable']=2.
-
-Attributes are defined by a widget, and optionally a value, options, range, source, and extractor.
-
-Extractors are used to extract data from the input data. For example, if the input is a dataframe, the extractor can be used to extract the column names of the dataframe.
-
-Allowed values for Attribute widgets:
-- lineedit: for text input
-- pylineedit: pythonic input. E.g. lists, also containing global variables.
-- spinbox: integer input
-- doublespinbox: float input
-- combobox: dropdown menu
-- checkable-combobox: dropdown menu with checkboxes (multiple selection)
-- filepath: file explorer input
-- filesave: file explorer output
-- colorpicker: color picker
+Common attribute widgets:
+- `lineedit`: text input
+- `pylineedit`: Python-style input (lists, expressions, access to globals)
+- `spinbox`: integer input
+- `doublespinbox`: float input
+- `combobox`: dropdown
+- `checkable-combobox`: dropdown with multiple selections
+- `filepath`: file chooser input
+- `filesave`: file chooser output
+- `colorpicker`: color picker widget
 
 About figures:
-- You can return figures from the node functions as matplotlib or plotly (see visuals.py).
+- You can return Matplotlib or Plotly figures from node functions (see `visuals.py` for examples).
 """
 
 

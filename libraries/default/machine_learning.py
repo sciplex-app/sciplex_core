@@ -1,3 +1,35 @@
+"""
+This file is part of the Sciplex default library and serves as a reference for creating new nodes.
+
+When you delete default libraries from the workspace, they are automatically restored on the next startup.
+
+Library files that expose functions and are imported into the sidebar become available in the flow. Files whose names start with an underscore (e.g., `_helpers.py`) are skipped.
+
+The following helpers are provided by `sciplex` (you can import them directly and the backend wires this up for you):
+- `@nodify`: decorate a function to define a node (see the examples below).
+- `Attribute`: describe the widgets that appear in the properties panel.
+- `workspace`: a global dictionary for sharing values between nodes (`workspace['foo'] = 2`).
+
+Every Sciplex node is just a Python function. Attributes control widget types in the properties panel, and parameters without defaults map to input sockets while those with defaults become editable parameters.
+
+Type hints are optional. Use extractors when you need to probe incoming data (e.g., pull column names from a dataframe).
+
+Common attribute widgets:
+- `lineedit`: text input
+- `pylineedit`: Python-style input (lists, expressions, access to globals)
+- `spinbox`: integer input
+- `doublespinbox`: float input
+- `combobox`: dropdown
+- `checkable-combobox`: dropdown with multiple selections
+- `filepath`: file chooser input
+- `filesave`: file chooser output
+- `colorpicker`: color picker widget
+
+About figures:
+- You can return Matplotlib or Plotly figures from node functions (see `visuals.py` for examples).
+"""
+
+
 import numbers
 
 import numpy as np

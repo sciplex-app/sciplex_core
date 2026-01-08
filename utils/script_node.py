@@ -1,26 +1,24 @@
 from sciplex_core.model.library_model import Attribute, LibraryItem, library_model
 
 # Default template for new script nodes
-SCRIPT_DEFAULT_CODE = '''def my_function(data):
+SCRIPT_DEFAULT_CODE = '''def my_function(data, i: int=2):
     """
-    Write your function here. Use type hints:
+    Write your function(s) or code here.
 
-    def process(df: pd.DataFrame, n: int = 10) -> pd.DataFrame:
-        return df.head(n)
-
-    - Parameters with defaults → editable widgets
+    - Parameters with defaults → editable widgets (available in properties panel of each node)
     - Parameters without defaults → input sockets
-    - Return type → output socket(s)
+    - Return → output socket(s)
 
-    Workspace variables:
+    If you use type hints for input sockets and return types, connecting nodes with incosistent types will result in an error.
+
+    You can use global variables to store data in a flow. To view it, click on the "Workspace" button in the toolbar.
+    
+    Example workspace variables:
         workspace["a"] = 2
-        xs = np.arange(0, 1, 0.1)
-        workspace["xs"] = xs
-        ys = workspace["xs"]
+        workspace["xs"] = np.arange(0, 1, 0.1)
 
-    Available: np, pd, plt, sklearn, workspace
     """
-    return data
+    return i*data
 '''
 
 
