@@ -20,66 +20,16 @@ from typing import Callable, Dict, List, Optional, Set
 logger = logging.getLogger(__name__)
 
 # Default allowed modules for user libraries
-DEFAULT_ALLOWED_MODULES = {'numpy', 'pandas', 'matplotlib', 'sklearn', 'scipy'}
+# NOTE: Restrictions disabled; kept for potential future use.
+DEFAULT_ALLOWED_MODULES = {'numpy', 'pandas', 'matplotlib', 'sklearn', 'scipy', 'plotly'}
 
 
 def create_restricted_import(allowed_modules: Set[str], default_dir: Optional[str] = None) -> Callable:
     """
-    Create a restricted __import__ function that only allows specific modules.
-
-    This is used to sandbox user library code to prevent importing
-    potentially dangerous modules.
-
-    Args:
-        allowed_modules: Set of allowed module names (e.g., {'numpy', 'pandas'})
-        default_dir: Path to default directory for importing helpers
-
-    Returns:
-        A restricted __import__ function
+    Previously returned a restricted __import__ to sandbox user libraries.
+    Restrictions are now disabled; we return the original import.
     """
-    original_import = builtins.__import__
-
-    def restricted_import(name, globals=None, locals=None, fromlist=(), level=0):
-        # Check if it's an allowed module or a submodule of an allowed module
-        root_module = name.split('.')[0]
-
-        # Special handling for _helpers (and other _-prefixed modules)
-        if root_module == '_helpers' or (root_module.startswith('_') and default_dir):
-            if default_dir and default_dir not in sys.path:
-                sys.path.insert(0, default_dir)
-            return original_import(name, globals, locals, fromlist, level)
-
-        # Special handling for sciplex - always allow
-        if root_module == 'sciplex':
-            return original_import(name, globals, locals, fromlist, level)
-
-        # Check if root module is in allowed scientific libraries
-        if root_module in allowed_modules:
-            return original_import(name, globals, locals, fromlist, level)
-
-        # Allow all standard library modules
-        if '.' not in name or name.split('.')[0] in sys.builtin_module_names:
-            return original_import(name, globals, locals, fromlist, level)
-
-        # Check if it's a standard library module
-        try:
-            spec = importlib.util.find_spec(root_module)
-            if spec and spec.origin:
-                stdlib_paths = [p for p in sys.path if 'site-packages' not in p and 'dist-packages' not in p]
-                if any(spec.origin.startswith(p) for p in stdlib_paths if p):
-                    return original_import(name, globals, locals, fromlist, level)
-        except (ImportError, AttributeError, ValueError):
-            pass
-
-        # Block the import
-        raise ImportError(
-            f"Import of '{name}' is not allowed. "
-            f"Only the following are allowed: "
-            f"sciplex, helpers, {', '.join(sorted(allowed_modules))}, "
-            f"and standard library modules."
-        )
-
-    return restricted_import
+    return builtins.__import__
 
 
 def infer_widget_from_type(type_hint) -> str:
@@ -323,12 +273,6 @@ class LibraryLoader:
             module = importlib.util.module_from_spec(spec)
             setattr(module, "__sciplex_library_name__", library_name)
             sys.modules[unique_module_name] = module
-
-            # Apply import restrictions
-            restricted_import = create_restricted_import(self.allowed_modules, self.default_dir)
-            custom_builtins = dict(vars(builtins))
-            custom_builtins['__import__'] = restricted_import
-            module.__builtins__ = custom_builtins
 
             spec.loader.exec_module(module)
 
