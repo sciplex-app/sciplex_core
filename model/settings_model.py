@@ -48,16 +48,6 @@ class SettingsModel(BaseModel):
                     "Show Tutorials": Attribute(widget="toggle", value=False),
                 },
             },
-            "AI Assistant": {
-                "label": "AI Assistant",
-                "elements": {
-                    "Context Mode": Attribute(
-                        widget="combobox",
-                        value="Private",
-                        options=["Private", "Full"]
-                    ),
-                },
-            },
         }
         self.colors = {
             # don't nest further or you'll have to update set_stylesheet
@@ -213,13 +203,6 @@ class SettingsModel(BaseModel):
     
     def get_node_execution_mode(self):
         return self.config["Execution"]["elements"]["Node execution"].value
-    
-    def get_llm_context_mode(self):
-        """Get the LLM context mode: 'Private' or 'Full'."""
-        try:
-            return self.config["AI Assistant"]["elements"]["Context Mode"].value
-        except KeyError:
-            return "Private"  # Default to private
 
     def is_dark_theme_enabled(self):
         return self._dark_theme
@@ -279,9 +262,10 @@ class SettingsModel(BaseModel):
                     },
                 }
         
-        # Remove LLM section if it exists (no longer wanted)
-        if "llm" in config:
-            del config["llm"]
+        # Remove legacy LLM/AI sections if they exist (no longer in core)
+        for legacy_key in ["llm", "AI Assistant"]:
+            if legacy_key in config:
+                del config[legacy_key]
         
         obj.config = config
         obj._dark_theme = True

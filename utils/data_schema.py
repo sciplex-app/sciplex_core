@@ -2,7 +2,7 @@
 Utility functions for extracting schema information from data objects.
 
 This module provides functions to extract metadata about data structures,
-primarily for pandas DataFrames, to help with LLM code generation.
+primarily for pandas DataFrames.
 """
 
 from typing import Optional

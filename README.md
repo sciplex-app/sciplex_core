@@ -59,17 +59,12 @@ Functions decorated with `@nodify` gain inputs/outputs from type hints and regis
 
 ## Package structure
 
-- `controller/` — Scene, node, edge, and library controllers plus event/clipboard abstractions.
+- `controller/` — Scene, node, edge controllers plus event/clipboard abstractions.
 - `model/` — Graph, node, edge, socket, settings, and annotation data models.
-- `utils/` — Shared utilities including `library_loader`, node factory helpers, graph export, and icon helpers.
+- `utils/` — Shared utilities including `library_loader`, node factory helpers, graph export.
 - `libraries/default/` — Packaged data, transform, math, visuals, and ML nodes (auto-copied into user workspaces).
-- `libraries/internal/` — Internal helpers (e.g., matplotlib-based visuals).
-- `assets/` — Application icons (see `icons_credits.txt`).
+- `assets/` — Application icons.
 - `sciplex/` — Public API surface for library authors (`Attribute`, `nodify`, `workspace`).
-
-## Optional features
-
-LLM-assisted node generation hooks into `sciplex_core_ext` (not bundled). Set `GEMINI_API_KEY` and install the extension to enable these methods; otherwise they safely return informative errors.
 
 ## Development & testing
 

@@ -60,8 +60,7 @@ def Correlation(data):
         if len(data.columns) < 2:
             raise ValueError("Need at least 2 columns for Correlation.")
     elif isinstance(data, pd.Series):
-        if 1 < 2:
-            raise ValueError("Need at least 2 columns for Correlation.")
+        raise ValueError("Need at least 2 columns for Correlation.")
     return data.corr()
 
 
@@ -331,7 +330,7 @@ def Not(data):
     Returns:
         bool: Inverted booleans.
     """
-    if isinstance(data, pd.DataFrame):
+    if isinstance(data, pd.DataFrame) or isinstance(data, pd.Series):
         res = ~data
     elif isinstance(data, numbers.Number):
         res=not data
@@ -357,7 +356,7 @@ def Relation(x, y, op: str = ">"):
     """
 
     ops = {
-        '==': [operator.eq, "e1"],
+        '==': [operator.eq, "eq"],
         '!=': [operator.ne, "ne"],
         '<': [operator.lt, "lt"],
         '<=': [operator.le, "le"],
@@ -374,7 +373,7 @@ def Relation(x, y, op: str = ">"):
 
 
 @nodify(icon = "roll",
-        kind=Attribute("combobox", value='mean', options=['mean', 'sum', 'max', 'min', 'var']),
+        kind=Attribute("combobox", value='mean', options=['mean', 'sum', 'max', 'min', 'var', 'std']),
         n=Attribute("spinbox")
 )
 def Rolling(data, kind: str = "mean", n: int = 1):

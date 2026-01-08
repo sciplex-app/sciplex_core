@@ -511,7 +511,7 @@ def RegressionMetric(data: pd.DataFrame, y_true: str=None, y_pred: str=None, op:
         random_state=Attribute("spinbox", value=42, range=[-int(1e9), int(1e9)]),
         shuffle = Attribute("combobox", value="True", options=["True", "False"])
         )
-def TrainTestSplit(data, test_size: float=0.3, shuffle: str="True"):
+def TrainTestSplit(data, test_size: float=0.3, random_state: int=42, shuffle: str="True"):
     """
     Split data into training and testing sets.
 
@@ -526,7 +526,7 @@ def TrainTestSplit(data, test_size: float=0.3, shuffle: str="True"):
     """
 
     shuffle = shuffle=="True"
-    train_df, test_df = train_test_split(data, test_size=test_size, random_state=42, shuffle=shuffle)
+    train_df, test_df = train_test_split(data, test_size=test_size, random_state=random_state, shuffle=shuffle)
     return train_df, test_df
 
 

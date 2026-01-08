@@ -184,8 +184,7 @@ def GroupBy(data: pd.DataFrame, kind: str = "sum", columns: list = []):
         if len(data.columns) < 2:
             raise ValueError("Need at least 2 columns for GroupBy.")
     elif isinstance(data, pd.Series):
-        if 1 < 2:
-            raise ValueError("Need at least 2 columns for GroupBy.")
+        raise ValueError("Need at least 2 columns for GroupBy.")
     return getattr(data.groupby(by=columns), kind)().reset_index()
 
 
@@ -237,8 +236,7 @@ def Pivot(data: pd.DataFrame, columns: str = None, index: str = None, values: st
         if len(data.columns) < 3:
             raise ValueError("Need at least 3 columns for Pivot.")
     elif isinstance(data, pd.Series):
-        if 1 < 3:
-            raise ValueError("Need at least 3 columns for Pivot.")
+        raise ValueError("Need at least 3 columns for Pivot.")
     return data.pivot(columns=columns, index=index, values=values)
 
 
@@ -394,8 +392,8 @@ def Switch(cond, y_true, y_false):
         icon="square",
         bins=Attribute("pylineedit"),
         column=Attribute("combobox", source="data", extractor="dataframe_columns"),
-        align=Attribute("combobox", value="ascending", options = ['left', 'center', 'right']),
-        clip=Attribute("combobox", value="ascending", options = ['True', 'False'])
+        align=Attribute("combobox", value="left", options = ['left', 'center', 'right']),
+        clip=Attribute("combobox", value="True", options = ['True', 'False'])
 )
 def ValuesToBins(data, bins: str = "", column: str = "", align: str = "left", clip: str = "True") -> pd.DataFrame:
     """

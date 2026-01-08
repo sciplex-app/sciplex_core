@@ -26,5 +26,3 @@ Assets:
 Notes:
 - License texts are provided within each dependency’s distribution (e.g., site-packages/*/LICENSE*). Consult those files for full terms and attribution requirements.
 - Matplotlib bundles additional font and third-party notices inside its LICENSE file; review when redistributing.
-- Optional LLM-related features rely on sciplex_core_ext (not bundled here); its licenses are tracked separately.
-

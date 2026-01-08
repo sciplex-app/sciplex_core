@@ -67,7 +67,6 @@ packages = [
     "sciplex_core.utils.nodes",
     "sciplex_core.libraries",
     "sciplex_core.libraries.default",
-    "sciplex_core.libraries.internal",
     "sciplex",
 ]
 
