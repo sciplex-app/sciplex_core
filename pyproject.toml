@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sciplex-core"
-version = "0.1.0"
+version = "0.1.1"
 description = "Core logic for Sciplex visual programming - models, controllers, and utilities"
 readme = "README.md"
 requires-python = ">=3.11"
