@@ -5,15 +5,11 @@ Handles node execution, reset, updates, and position management.
 Uses EventEmitter for framework-agnostic reactive updates.
 """
 
-import ast
 import logging
 from dataclasses import dataclass
-from typing import Callable, Optional, Tuple
+from typing import Optional
 
-import numpy as np
 import pandas as pd
-import sklearn
-from matplotlib.figure import Figure
 
 from sciplex_core.controller.events import EventEmitter, SimpleEventEmitter
 from sciplex_core.model.node_model import EXECUTED, FAILED, READY, NodeModel
