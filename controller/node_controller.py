@@ -184,67 +184,6 @@ class NodeController:
         """
         self.node_model.update_position(x, y)
 
-    def extract_function_from_code(self, code: str) -> Tuple[Optional[Callable], Optional[str]]:
-        """
-        Extract a Python function from code string.
-
-        Parses the code, validates it contains a function definition,
-        executes it in a safe namespace, and returns the function and its name.
-
-        Args:
-            code: Python code string containing a function definition
-
-        Returns:
-            Tuple of (function, function_name) or (None, None) on error.
-            Emits parsing_failed or parsing_succeeded signals.
-        """
-        func_name = "<unknown>"
-        try:
-            if not code:
-                raise ValueError("Code string is empty")
-
-            # Create safe namespace with common imports
-            local_ns = {"pd": pd, "Fig": Figure, "np": np, "sklearn": sklearn, "tuple": tuple}
-
-            # Parse AST
-            tree = ast.parse(code)
-
-            if not tree.body or not isinstance(tree.body[0], ast.FunctionDef):
-                raise ValueError("No function definition found in code.")
-
-            func_name = tree.body[0].name
-
-            # Update model title
-            self.node_model.title = func_name
-
-            # Execute code in namespace
-            exec(code, local_ns)
-
-            # Get function from namespace
-            func = local_ns.get(func_name)
-            if callable(func):
-                self.on_parsing_succeeded()
-                return func, func_name
-            else:
-                self.node_model.failed = True
-                self.on_parsing_failed(f"'{func_name}' is not callable", 0)
-                return None, None
-
-        except SyntaxError as e:
-            error_message = f"Syntax Error: {e.msg} at line {e.lineno}"
-            logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-            logger.error(error_message)
-            self.on_parsing_failed(error_message, e.lineno - 1)
-            self.node_model.failed = True
-            return None, None
-        except Exception as e:
-            error_message = f"Error extracting function '{func_name}': {e}"
-            self.node_model.failed = True
-            logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
-            logger.exception(error_message)
-            self.on_parsing_failed(error_message, 0)
-            return None, None
-
     def set_input_data(self, socket_name: str, data) -> None:
         """
         Set input data for a specific socket.
