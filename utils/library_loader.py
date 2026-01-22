@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # Default allowed modules for user libraries
 # NOTE: Restrictions disabled; kept for potential future use.
-DEFAULT_ALLOWED_MODULES = {'numpy', 'pandas', 'matplotlib', 'sklearn', 'scipy', 'plotly'}
+DEFAULT_ALLOWED_MODULES = {'numpy', 'pandas', 'sklearn', 'scipy', 'plotly'}
 
 
 def create_restricted_import(allowed_modules: Set[str], default_dir: Optional[str] = None) -> Callable:
