@@ -26,7 +26,7 @@ Common attribute widgets:
 - `colorpicker`: color picker widget
 
 About figures:
-- You can return Matplotlib or Plotly figures from node functions (see `visuals.py` for examples).
+- You can return Plotly figures from node functions (see `visuals.py` for examples).
 """
 
 import numbers
@@ -391,7 +391,7 @@ def Line(data, title: str = "My Plot", color: str="#06E4A8", x: str=None, y: str
     marker_symbol = marker_symbol_map.get(marker, None) if marker else None
 
     # Determine mode based on linestyle and marker
-    has_line = linestyle != ' '  # Space means no line in matplotlib
+    has_line = linestyle != ' '  # Space means no line
     if has_line and marker_symbol:
         mode = 'lines+markers'
     elif has_line:

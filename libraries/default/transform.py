@@ -26,7 +26,7 @@ Common attribute widgets:
 - `colorpicker`: color picker widget
 
 About figures:
-- You can return Matplotlib or Plotly figures from node functions (see `visuals.py` for examples).
+- You can return Plotly figures from node functions (see `visuals.py` for examples).
 """
 
 import numbers

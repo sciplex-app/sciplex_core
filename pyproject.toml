@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sciplex-core"
-version = "0.1.1"
+version = "0.1.2"
 description = "Core logic for Sciplex visual programming - models, controllers, and utilities"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -30,20 +30,16 @@ dependencies = [
     "pandas>=2.2.0",
     "numpy>=1.26.0",
     "scikit-learn>=1.6.0,<2.0.0",
-    "matplotlib>=3.10.0",
     "xgboost>=3.0.0",
     # Graph/Network
     "networkx>=3.4.0",
     # Utilities
     "python-dotenv>=1.0.0",
     "docstring_parser>=0.16",
-    "requests>=2.31.0",
     "openpyxl>=3.1.0",
     "numexpr>=2.11.0",
     # Plotting
     "plotly>=5.0.0",
-    # Plotly image export
-    "kaleido>=0.2.1",
 ]
 
 [project.optional-dependencies]

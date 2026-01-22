@@ -117,12 +117,6 @@ class NodeModel(BaseModel):
         try:
             # Try to import optional modules
             try:
-                import matplotlib.pyplot as plt
-                namespace["plt"] = plt
-            except ImportError:
-                pass
-
-            try:
                 import sklearn
                 namespace["sklearn"] = sklearn
             except ImportError:
