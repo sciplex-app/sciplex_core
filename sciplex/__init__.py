@@ -5,11 +5,27 @@ This module provides a clean interface for users creating custom node libraries.
 
 Usage:
     from sciplex import nodify, Attribute, workspace
+    from sciplex import llm  # for agent nodes (available in Sciplex Platform)
 """
 
 from sciplex_core.model.library_model import Attribute
 from sciplex_core.utils.functions import variables_registry
 from sciplex_core.utils.node_factory import nodify
+
+try:
+    from sciplex_core_ext.utils.llm import llm
+except ImportError:
+
+    class _LLMUnavailable:
+        """Placeholder when sciplex_core_ext is not installed (e.g. core-only install)."""
+
+        def generate(self, prompt: str, system_prompt=None, **kwargs) -> str:
+            raise RuntimeError(
+                "LLM helper is only available when running in Sciplex Platform. "
+                "Install sciplex_platform (or sciplex_core_ext) to use llm.generate() in nodes."
+            )
+
+    llm = _LLMUnavailable()
 
 
 class _WorkspaceProxy:
@@ -54,5 +70,6 @@ __all__ = [
     "nodify",
     "Attribute",
     "workspace",
+    "llm",
 ]
 

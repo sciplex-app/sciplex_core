@@ -165,7 +165,15 @@ class LibraryLoader:
         os.makedirs(self.default_dir, exist_ok=True)
 
         # Files to copy (exclude __init__.py, __pycache__, and tutorial.py)
-        node_files = ["_helpers.py", "data.py", "math.py", "transform.py", "visuals.py", "machine_learning.py"]
+        node_files = [
+            "_helpers.py",
+            "data.py",
+            "math.py",
+            "transform.py",
+            "visuals.py",
+            "machine_learning.py",
+            "ai.py",
+        ]
 
         for filename in node_files:
             source_path = os.path.join(source_dir, filename)

@@ -96,7 +96,7 @@ class NodeModel(BaseModel):
         import numpy as np
         import pandas as pd
 
-        from sciplex import workspace
+        from sciplex import workspace, llm
 
         code = self.parameters.get("function")
         if not code or not code.value:
@@ -106,11 +106,12 @@ class NodeModel(BaseModel):
         if not code_str:
             return None
 
-        # Create execution namespace with common imports
+        # Create execution namespace with common imports (llm for agent nodes)
         namespace = {
             "pd": pd,
             "np": np,
             "workspace": workspace,
+            "llm": llm,
             "__builtins__": __builtins__,
         }
 
